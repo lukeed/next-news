@@ -8,6 +8,7 @@ const types = ['top', 'new', 'ask', 'show', 'job']
 
 // Prepare caches
 const lists = new LRU({ maxAge })
+const users = new LRU({ maxAge, max: 100 })
 const items = new LRU({ maxAge, max: per * types.length })
 
 // Overly simple response handler
@@ -40,7 +41,13 @@ app
 
 	.get('/item/:id', async (req, res) => {
 		const key = req.url
-		const data = items.get(key) || await getItem(req.params.id)
+		const data = items.get(key) || await addCache(key, items)
+		return send(res, data)
+	})
+
+	.get('/user/:name', async (req, res) => {
+		const { name } = req.params
+		const data = users.get(name) || await addCache(req.url, users)
 		return send(res, data)
 	})
 
