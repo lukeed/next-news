@@ -12,11 +12,12 @@ const items = new LRU({ maxAge, max: per * types.length })
 
 // Overly simple response handler
 const send = (res, data) => data ? res.json({ data }) : res.status(404).json({ error: 'Not found!' })
+const getChild = async key => await DB.child(key).once('value').then(s => s.val())
+const cacheItem = id => addCache(`/item/${id}`, items) // hoist for `forEach`
 
-async function getItem(id) {
-	const key = `/item/${id}`;
-	const data = await DB.child(key).once('value').then(s => s.val())
-	data && items.set(key, data)
+async function addCache(key, cache) {
+	const data = await getChild(key)
+	data && cache.set(key, data)
 	return data
 }
 
@@ -24,7 +25,7 @@ types.forEach(type => {
 	const ref = DB.child(`${type}stories`)
 
 	// Grab first X items per list; only @ startup!
-	ref.once('value', snap => snap.val().slice(0, per).forEach(getItem))
+	ref.once('value', snap => snap.val().slice(0, per).forEach(cacheItem))
 
 	// Set up list watchers; continuously updates
 	ref.on('value', snap => lists.set(type, snap.val()))
