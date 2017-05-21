@@ -5,7 +5,7 @@
     "express": "^4.15.2",
     "firebase": "^4.0.0",
     "lru-cache": "^4.0.2",
-    "ms": "^1.0.0",
+    "ms": "^2.0.0",
     "next": "beta",
     "nprogress": "^0.2.0",
     "react": "^15.4.2",
