@@ -4,4 +4,8 @@ firebase.initializeApp({
 	databaseURL: 'https://hacker-news.firebaseio.com'
 })
 
-module.exports = firebase.database().ref('v0')
+const DB = firebase.database().ref('v0')
+
+const getChild = key => DB.child(key).once('value').then(s => s.val())
+
+module.exports = { DB, getChild }

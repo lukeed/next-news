@@ -10,10 +10,10 @@ const types = ['top', 'new', 'ask', 'show', 'job']
 const lists = new LRU({ maxAge })
 const users = new LRU({ maxAge, max: 100 })
 const items = new LRU({ maxAge, max: PER * types.length })
+const { getChild } = require('./data')
 
 // Overly simple response handler
 const send = (res, data) => data ? res.json({ data }) : res.status(404).json({ error: 'Not found!' })
-const getChild = async key => await DB.child(key).once('value').then(s => s.val())
 const cacheItem = id => addCache(`/item/${id}`, items) // hoist for `forEach`
 
 async function addCache(key, cache) {
