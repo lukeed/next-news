@@ -2,14 +2,14 @@ const { Router } = require('express')
 const LRU = require('lru-cache')
 const DB = require('./db')
 
-const per = 30 // inital # per type
+const PER = 30 // inital # per type
 const maxAge = 1000 * 60 * 60 // 1 hour
 const types = ['top', 'new', 'ask', 'show', 'job']
 
 // Prepare caches
 const lists = new LRU({ maxAge })
 const users = new LRU({ maxAge, max: 100 })
-const items = new LRU({ maxAge, max: per * types.length })
+const items = new LRU({ maxAge, max: PER * types.length })
 
 // Overly simple response handler
 const send = (res, data) => data ? res.json({ data }) : res.status(404).json({ error: 'Not found!' })
@@ -24,10 +24,8 @@ async function addCache(key, cache) {
 
 types.forEach(type => {
 	const ref = DB.child(`${type}stories`)
-
 	// Grab first X items per list; only @ startup!
-	ref.once('value', snap => snap.val().slice(0, per).forEach(cacheItem))
-
+	ref.once('value', snap => snap.val().slice(0, PER).forEach(cacheItem))
 	// Set up list watchers; continuously updates
 	ref.on('value', snap => lists.set(type, snap.val()))
 })
