@@ -1,6 +1,6 @@
 const { Router } = require('express')
 const LRU = require('lru-cache')
-const DB = require('./db')
+const DB = require('./data')
 
 const PER = 30 // inital # per type
 const maxAge = 1000 * 60 * 60 // 1 hour
