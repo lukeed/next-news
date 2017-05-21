@@ -3,7 +3,7 @@
   "license": "MIT",
   "dependencies": {
     "express": "^4.15.2",
-    "firebase": "^3.7.3",
+    "firebase": "^4.0.0",
     "lru-cache": "^4.0.2",
     "ms": "^1.0.0",
     "next": "beta",
